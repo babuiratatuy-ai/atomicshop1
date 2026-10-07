@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>ATOMIC SHOP — Админка</title>
+<script src="firebase.js"></script>
+<script src="config.js"></script>
+<style>
+:root{--bg:#070907;--panel:#0f1510;--line:#ffffff18;--gold:#d5a84b;--green:#39ff14;--red:#ff5a4d;--yel:#ffe600;--tx:#e8efe2;--mut:#8b978a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(120% 60% at 50% -10%,#16240f,transparent 60%),var(--bg);color:var(--tx);font:15px/1.4 "Trebuchet MS",system-ui,sans-serif;padding:env(safe-area-inset-top) 0 40px}
+.wrap{max-width:720px;margin:auto;padding:14px}
+h1{font:900 20px/1 "Arial Black",Impact,sans-serif;letter-spacing:2px;margin:0}h1 span{color:var(--gold)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.muted{color:var(--mut);font-size:12.5px}
+input,button,textarea{font:inherit}
+input[type=text],input[type=number],input[type=password],input[type=email],textarea{background:#060906;border:1px solid var(--line);border-radius:9px;color:var(--tx);padding:10px;width:100%;margin-top:8px}
+input:focus,textarea:focus{outline:2px solid var(--gold);border-color:transparent}
+button{border:0;border-radius:10px;padding:11px 13px;font-weight:800;cursor:pointer;color:#000;background:var(--gold)}
+button.sec{background:#1b2519;color:var(--tx);border:1px solid var(--line)}
+button.g{background:#1d6b1a;color:#fff}button.y{background:var(--yel)}button.r{background:#a62a20;color:#fff}button.b{background:#2a6fd6;color:#fff}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0 10px}
+#cloud{font-size:12px;color:var(--mut)}
+.tabs{position:sticky;top:0;z-index:6;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#070907f0;backdrop-filter:blur(10px);padding:8px 0}
+.tabs button{background:#1b2519;color:var(--mut);border:1px solid var(--line);padding:12px 4px;font-size:13px}
+.tabs button.on{background:var(--gold);color:#000}
+.tabs i{font-style:normal;background:var(--red);color:#fff;border-radius:99px;padding:1px 7px;margin-left:5px;font-size:11px}
+.pane{display:none}.pane.on{display:block}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px}
+.chips button{white-space:nowrap;background:#1b2519;color:var(--tx);border:1px solid var(--line);padding:8px 12px;font-size:12.5px}
+.chips button.on{background:var(--green);color:#000}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.stats div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stats b{display:block;font:900 20px "Arial Black",sans-serif;color:var(--yel)}.stats span{font-size:11px;color:var(--mut)}
+.ord{background:var(--panel);border:1px solid var(--line);border-left:5px solid var(--yel);border-radius:14px;padding:12px;margin-bottom:10px}
+.ord.s-wait{border-left-color:#2a6fd6}.ord.s-accepted{border-left-color:var(--green)}.ord.s-done{border-left-color:#555}.ord.s-declined{border-left-color:var(--red);opacity:.75}
+.oh{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--mut)}
+.pill{font-weight:900;font-size:11.5px;padding:3px 9px;border-radius:99px;background:#ffe60022;color:var(--yel)}
+.s-accepted .pill{background:#39ff1422;color:var(--green)}.s-wait .pill{background:#2a6fd633;color:#7fb0ff}.s-declined .pill{background:#ff5a4d22;color:var(--red)}.s-done .pill{background:#ffffff14;color:var(--mut)}
+.pid{display:inline-block;margin:8px 0 4px;font:900 17px "Courier New",monospace;background:#060906;border:1px dashed var(--gold);border-radius:8px;padding:5px 10px;color:var(--gold)}
+.ln{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid var(--line);font-size:14px}
+.tot{display:flex;justify-content:space-between;font-weight:900;margin:8px 0}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.acts.two{grid-template-columns:1fr 1fr}.acts.one{grid-template-columns:1fr}
+.note{font-size:12.5px;color:var(--mut);margin-top:6px}
+.grp{font:900 13px/1 "Arial Black",sans-serif;letter-spacing:2px;color:var(--gold);margin:16px 0 8px}
+.hd,.it{display:grid;grid-template-columns:1fr 78px 112px;gap:8px;align-items:center}
+.hd{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;padding:0 0 4px}
+.it{padding:8px 0;border-bottom:1px solid var(--line)}.it:last-child{border:0}
+.it b{display:block;font-size:14.5px}.it small{color:var(--mut)}.it input{margin:0;padding:9px 6px;text-align:center}
+.it.chg{background:linear-gradient(90deg,#d5a84b14,transparent)}.it.out b,.it.out small{color:var(--red)}
+.st{display:grid;grid-template-columns:30px 1fr 30px;gap:3px}.st button{padding:0;background:#1b2519;color:var(--tx);border:1px solid var(--line);font-size:18px}
+.status{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.status button{padding:16px 8px;font-size:14px;background:#1b2519;color:var(--mut);border:2px solid transparent}
+.status button.on.open{background:#123d10;color:var(--green);border-color:var(--green)}.status button.on.closed{background:#4a1410;color:#ff8a7d;border-color:var(--red)}
+.row{display:flex;gap:8px}.row>*{flex:1}
+pre{background:#060906;border:1px solid var(--line);border-radius:9px;padding:10px;overflow:auto;font-size:11.5px;color:#b9d6a8;white-space:pre-wrap;word-break:break-all}
+ol{padding-left:18px;margin:8px 0 0}ol li{margin:6px 0}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#fff;color:#000;font-weight:800;padding:10px 16px;border-radius:99px;opacity:0;transition:.25s;z-index:20;pointer-events:none;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#lock{max-width:360px;margin:12vh auto 0}#app{display:none}
+</style></head><body>
+
+<div id="lock" class="card">
+  <h1>☢ ATOMIC <span>ADMIN</span></h1>
+  <p class="muted" id="lockHint">Вход для владельца</p>
+  <input type="email" id="em" placeholder="Email" autocomplete="username">
+  <input type="password" id="pw" placeholder="Пароль" autocomplete="current-password">
+  <button style="width:100%;margin-top:10px" onclick="login()">ВОЙТИ</button>
+</div>
+
+<div id="app" class="wrap">
+  <div class="top"><h1>☢ ATOMIC <span>ADMIN</span></h1><span id="cloud"></span></div>
+  <div class="tabs">
+    <button id="t-orders" class="on" onclick="tab('orders')">📥 ЗАКАЗЫ<i id="nNew" style="display:none">0</i></button>
+    <button id="t-prod" onclick="tab('prod')">📦 ТОВАРЫ</button>
+    <button id="t-set" onclick="tab('set')">⚙️ ДОПОЛНИТЕЛЬНО</button>
+  </div>
+
+  <div class="pane on" id="p-orders">
+    <div class="stats"><div><b id="sN">0</b><span>заказов сегодня</span></div><div><b id="sS">₴0</b><span>принято сегодня</span></div><div><b id="sW">0</b><span>ждут ответа</span></div></div>
+    <div class="chips" id="chips"></div>
+    <div id="ords"></div>
+  </div>
+
+  <div class="pane" id="p-prod">
+    <input type="text" id="q" placeholder="🔎 Поиск товара (например: Допы, Сталик, АВМ)" oninput="draw()">
+    <div class="card" style="margin-top:10px">
+      <div class="muted">Поставить остаток всем товарам из списка ниже (пусто = без лимита):</div>
+      <div class="row"><input type="number" id="bulk" min="0" placeholder="Сколько, например 10"><button onclick="bulkSet()" style="margin-top:8px">ПРИМЕНИТЬ</button></div>
+    </div>
+    <div class="hd"><span>Товар</span><span>Цена ₴</span><span>Сколько в наличии</span></div>
+    <div id="list"></div>
+  </div>
+
+  <div class="pane" id="p-set">
+    <div class="card">
+      <b>Статус магазина</b>
+      <div class="status" style="margin-top:10px">
+        <button id="bOpen" class="open" onclick="setOpen(true)">🟢 МЫ ОТКРЫТЫ</button>
+        <button id="bClosed" class="closed" onclick="setOpen(false)">🔴 ВРЕМЕННО ЗАКРЫТЫ</button>
+      </div>
+      <input type="text" id="ctext" placeholder="Текст покупателям, когда закрыто" oninput="C.closedText=this.value;save()">
+    </div>
+    <div class="card">
+      <b>Сервис</b>
+      <div class="acts two" style="margin-top:10px">
+        <button class="sec" onclick="clearOld()">🧹 Убрать выданные и отклонённые заказы</button>
+        <button class="sec" onclick="dl()">⬇ Скачать config.js</button>
+        <button class="sec" onclick="soundOn=!soundOn;toast(soundOn?'🔔 Звук включён':'🔕 Звук выключен')">🔔 Звук заказов вкл/выкл</button>
+        <button class="sec" onclick="logout()">🚪 Выйти</button>
+      </div>
+      <p class="muted">Заказы обновляются сами каждые 5 секунд, на новый заказ — звук и вибрация. Пока вкладка админки открыта.</p>
+    </div>
+    <div class="card" id="setup">
+      <b>Подключение базы (один раз)</b>
+      <ol class="muted">
+        <li>console.firebase.google.com → создать проект.</li>
+        <li>Build → Realtime Database → Create database.</li>
+        <li>Вкладка Rules → вставь правила ниже → Publish.</li>
+        <li>Build → Authentication → Email/Password включить → Users → Add user (твой email и пароль для входа сюда).</li>
+        <li>Адрес базы и Web API Key (Project settings) впиши в <b>firebase.js</b>.</li>
+      </ol>
+      <pre id="rules"></pre>
+      <button class="sec" style="margin-top:8px" onclick="copyRules()">📋 Скопировать правила</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+const ADMIN_PASS='atom2026'; /* пароль только для режима БЕЗ базы; с базой вход по email Firebase */
+const P=[{"name": "Броник", "cat": "6 уровень", "price": 20, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "6 уровень", "price": 20, "icon": "⛑️", "group": "armor"}, {"name": "Броник", "cat": "Кобра", "price": 25, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "Кобра", "price": 25, "icon": "⛑️", "group": "armor"}, {"name": "Броник", "cat": "Сталик", "price": 30, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "Сталик", "price": 30, "icon": "⛑️", "group": "armor"}, {"name": "МК-Вышка", "cat": "МК", "price": 20, "icon": "⚔️", "group": "weapon"}, {"name": "МК-Сталик", "cat": "МК", "price": 30, "icon": "⚔️", "group": "weapon"}, {"name": "МК-Кобра", "cat": "МК", "price": 25, "icon": "⚔️", "group": "weapon"}, {"name": "Вышка", "cat": "Калаш", "price": 20, "icon": "🔥", "group": "weapon"}, {"name": "Сталик", "cat": "Калаш", "price": 30, "icon": "🔥", "group": "weapon"}, {"name": "Кобра", "cat": "Калаш", "price": 25, "icon": "🔥", "group": "weapon"}, {"name": "Пластина", "cat": "Допы", "price": 20, "icon": "🛡️", "group": "extras"}, {"name": "Теплак", "cat": "Допы", "price": 20, "icon": "🌡️", "group": "extras"}, {"name": "Рюкзак", "cat": "Допы", "price": 20, "icon": "🎒", "group": "extras"}, {"name": "5 карта", "cat": "Сопроводы", "price": 50, "icon": "🗺️", "group": "escort"}, {"name": "6 карта", "cat": "Сопроводы", "price": 70, "icon": "🗺️", "group": "escort"}, {"name": "7 карта", "cat": "Сопроводы", "price": 95, "icon": "🗺️", "group": "escort"}, {"name": "8 карта", "cat": "Сопроводы", "price": 150, "icon": "🗺️", "group": "escort"}, {"name": "Вышка", "cat": "АВМ", "price": 30, "icon": "🎯", "group": "aviation"}, {"name": "Сталик", "cat": "АВМ", "price": 38, "icon": "🎯", "group": "aviation"}, {"name": "Кобра", "cat": "АВМ", "price": 45, "icon": "🎯", "group": "aviation"}, {"name": "AUG-Вышка", "cat": "AUG", "price": 20, "icon": "🔫", "group": "weapon"}, {"name": "AUG-Кобра", "cat": "AUG", "price": 25, "icon": "🔫", "group": "weapon"}, {"name": "AUG-Сталик", "cat": "AUG", "price": 30, "icon": "🔫", "group": "weapon"}, {"name": "М416-Вышка", "cat": "М416", "price": 20, "icon": "💥", "group": "weapon"}, {"name": "М416-Кобра", "cat": "М416", "price": 25, "icon": "💥", "group": "weapon"}, {"name": "М416-Сталик", "cat": "М416", "price": 30, "icon": "💥", "group": "weapon"}];
+const GR={armor:'🛡 БРОНЯ',weapon:'🔫 ОРУЖИЕ',aviation:'🎯 АВИАЦИЯ (АВМ)',extras:'🎒 ДОПЫ',escort:'🗺 СОПРОВОДЫ'};
+const $=id=>document.getElementById(id);
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const key=p=>p.name+'|'+p.cat;
+const DB=window.ATOMIC_DB||{},DBON=!!(DB.url&&DB.apiKey),U=(DB.url||'').replace(/\/$/,'');
+const RULES='{\n "rules": {\n  "config": {".read": true, ".write": "auth != null"},\n  "orders": {\n   ".read": "auth != null",\n   ".write": "auth != null",\n   "$id": {\n    ".read": true,\n    ".write": "!data.exists()",\n    "status": {".validate": "newData.val() == \'new\' || auth != null"}\n   }\n  }\n }\n}';
+$('rules').textContent=RULES;
+function copyRules(){try{navigator.clipboard.writeText(RULES).then(()=>toast('Правила скопированы'))}catch(e){toast('Не вышло')}}
+let C={open:true,closedText:'',prices:{},stock:{}},O={},seen=null,F='active',soundOn=true,TOK=null,EXP=0,pt;
+
+/* ---- Firebase REST ---- */
+function setTok(t,rt,ex,email){TOK=t;EXP=Date.now()+ex*1000;try{localStorage.setItem('atomicAdminRT',JSON.stringify({rt,email}))}catch(e){}}
+async function signIn(email,pw){const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+DB.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw,returnSecureToken:true})});const j=await r.json();if(!r.ok)throw new Error('auth');setTok(j.idToken,j.refreshToken,+j.expiresIn,email)}
+async function refresh(){const s=JSON.parse(localStorage.getItem('atomicAdminRT')||'null');if(!s)throw 0;const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+DB.apiKey,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(s.rt)});const j=await r.json();if(!r.ok)throw 0;setTok(j.id_token,j.refresh_token,+j.expires_in,s.email)}
+async function api(path,method,body){if(!TOK||Date.now()>EXP-120000)await refresh();const r=await fetch(U+path+(path.includes('?')?'&':'?')+'auth='+TOK,{method:method||'GET',headers:body!==undefined?{'Content-Type':'application/json'}:{},body:body!==undefined?JSON.stringify(body):undefined});if(!r.ok)throw new Error('db '+r.status);return r.json()}
+
+/* ---- вход ---- */
+if(!DBON){$('em').style.display='none';$('lockHint').textContent='База не подключена — режим без заказов (только цены и остатки)'}
+async function login(){
+  try{
+    if(DBON){await signIn($('em').value.trim(),$('pw').value);await enter()}
+    else if($('pw').value===ADMIN_PASS){await enter()}
+    else throw 0;
+  }catch(e){toast('Неверный вход');$('pw').value=''}
+}
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+function logout(){try{localStorage.removeItem('atomicAdminRT')}catch(e){}location.reload()}
+async function enter(){
+  $('lock').style.display='none';$('app').style.display='block';
+  let src={};
+  if(DBON){try{src=await api('/config.json')||{}}catch(e){toast('Нет связи с базой');src=window.ATOMIC_CONFIG||{}}}
+  else{try{src=JSON.parse(localStorage.getItem('atomicAdminDraft')||'null')||window.ATOMIC_CONFIG||{}}catch(e){src=window.ATOMIC_CONFIG||{}}}
+  C={open:src.open!==false,closedText:src.closedText||'',prices:src.prices||{},stock:src.stock||{}};
+  $('ctext').value=C.closedText;paintStatus();draw();
+  $('setup').style.display=DBON?'none':'block';
+  if(DBON){poll();pt=setInterval(poll,5000);$('cloud').textContent='☁ на связи'}
+  else{$('ords').innerHTML='<div class="card muted">Заказы в админку не приходят: подключи базу (вкладка «Дополнительно» → «Подключение базы»). Пока заказы идут в Telegram.</div>';$('chips').innerHTML=''}
+}
+(async()=>{if(DBON){try{await refresh();await enter()}catch(e){}}})();
+document.addEventListener('click',()=>ctx(),{once:true});
+function tab(t){['orders','prod','set'].forEach(x=>{$('p-'+x).classList.toggle('on',x===t);$('t-'+x).classList.toggle('on',x===t)})}
+
+/* ---- заказы ---- */
+const STN={new:'НОВЫЙ',wait:'ПОДОЖДИТЕ',accepted:'ПРИНЯТ',declined:'ОТКЛОНЁН',done:'ВЫДАН'};
+const FL=[['active','🔥 Новые и в работе'],['accepted','✅ Принятые'],['done','📦 Выданные'],['declined','❌ Отклонённые'],['all','Все']];
+let AC=null;function ctx(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}return AC}
+function ding(){if(!soundOn)return;try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(e){}const c=ctx();if(!c)return;[880,1175,1568].forEach((f,i)=>{const t=c.currentTime+i*.14,o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.18,t);g.gain.exponentialRampToValueAtTime(.001,t+.3);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+.3)})}
+async function poll(){
+  try{
+    const d=await api('/orders.json?orderBy=%22%24key%22&limitToLast=80')||{};O=d;
+    const ks=Object.keys(d);
+    if(seen===null)seen=new Set(ks);
+    else for(const k of ks)if(!seen.has(k)){seen.add(k);if(d[k].status==='new'){ding();toast('🔔 Новый заказ №'+d[k].oid,3000)}}
+    $('cloud').textContent='☁ на связи';drawOrders();
+  }catch(e){$('cloud').textContent='⚠ нет связи'}
+}
+function drawOrders(){
+  const ids=Object.keys(O).sort((a,b)=>(O[b].t||0)-(O[a].t||0)),day=new Date().setHours(0,0,0,0);
+  const cnt=s=>ids.filter(k=>O[k].status===s).length,nNew=cnt('new');
+  let tN=0,tS=0;ids.forEach(k=>{const o=O[k];if((o.t||0)>=day){tN++;if(o.status==='accepted'||o.status==='done')tS+=+o.total||0}});
+  $('sN').textContent=tN;$('sS').textContent='₴'+tS;$('sW').textContent=nNew+cnt('wait');
+  $('nNew').style.display=nNew?'inline':'none';$('nNew').textContent=nNew;document.title=(nNew?'('+nNew+') ':'')+'ATOMIC — Заказы';
+  $('chips').innerHTML=FL.map(f=>'<button class="'+(F===f[0]?'on':'')+'" onclick="F=\''+f[0]+'\';drawOrders()">'+f[1]+'</button>').join('');
+  const show=ids.filter(k=>F==='all'||(F==='active'?(O[k].status==='new'||O[k].status==='wait'):O[k].status===F));
+  $('ords').innerHTML=show.length?show.map(k=>{
+    const o=O[k],st=o.status||'new',L=o.lines||[];
+    const btn=(s,l,c)=>'<button class="'+c+'" onclick="setSt(\''+k+'\',\''+s+'\')">'+l+'</button>';
+    let a=(st==='new'||st==='wait')?'<div class="acts">'+btn('accepted','✅ Принять','g')+btn('wait','🕐 Подождите','b')+btn('declined','❌ Отклонить','r')+'</div>':st==='accepted'?'<div class="acts two">'+btn('done','📦 Выдано','g')+btn('declined','❌ Отменить','r')+'</div>':'';
+    return '<div class="ord s-'+st+'"><div class="oh"><span>№'+esc(o.oid)+' · '+new Date(o.t).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</span><span class="pill">'+STN[st]+'</span></div>'+
+     '<div class="pid" onclick="cpy(\''+esc(o.pubg)+'\')">🎮 '+esc(o.pubg)+'</div>'+
+     L.map(l=>'<div class="ln"><span>'+esc(l.name)+'</span><b>'+(l.price?'₴'+l.price:'🎁')+'</b></div>').join('')+
+     '<div class="tot"><span>Итого'+(o.disc?' (скидка −₴'+o.disc+')':'')+'</span><span>₴'+o.total+' · ⭐'+o.total+(o.cur==='RUB'?' · '+Math.round(o.total*2)+'₽':'')+'</span></div>'+
+     '<div class="muted">'+esc(o.pay||'')+'</div>'+(o.note?'<div class="note">💬 '+esc(o.note)+'</div>':'')+(a?'<div style="margin-top:10px">'+a+'</div>':'')+'</div>';
+  }).join(''):'<div class="card muted" style="text-align:center">Здесь пусто 👌</div>';
+}
+function cpy(t){try{navigator.clipboard.writeText(t).then(()=>toast('PUBG ID скопирован'))}catch(e){}}
+async function cutStock(o,dir){
+  let ch=false;(o.lines||[]).forEach(l=>(l.keys||[]).forEach(k=>{if(C.stock[k]!==undefined&&C.stock[k]!==''){C.stock[k]=Math.max(0,+C.stock[k]+dir);ch=true}}));
+  if(ch){await pub();draw()}
+}
+async function setSt(id,st){
+  const o=O[id];if(!o)return;let note='';
+  if(st==='declined'){const r=prompt('Причина отказа (можно оставить пустым):','');if(r===null)return;note=r}
+  if(st==='wait'){const r=prompt('Что написать клиенту:','Подождите немного, скоро отвечу');if(r===null)return;note=r||'Подождите немного'}
+  const patch={status:st,note,upd:Date.now()};
+  try{
+    if(st==='accepted'&&!o.cut){await cutStock(o,-1);patch.cut=true}
+    if(st==='declined'&&o.cut){await cutStock(o,1);patch.cut=false}
+    await api('/orders/'+id+'.json','PATCH',patch);toast({accepted:'✅ Принят, остаток уменьшен',wait:'🕐 Клиент увидит «Подождите»',declined:'❌ Отклонён',done:'📦 Отмечено выданным'}[st]);poll()
+  }catch(e){toast('Не вышло, проверь связь')}
+}
+async function clearOld(){
+  const d={};Object.keys(O).forEach(k=>{if(O[k].status==='done'||O[k].status==='declined')d[k]=null});
+  if(!Object.keys(d).length){toast('Нечего убирать');return}
+  if(!confirm('Удалить выданные и отклонённые заказы ('+Object.keys(d).length+')?'))return;
+  try{await api('/orders.json','PATCH',d);toast('Очищено');poll()}catch(e){toast('Не вышло')}
+}
+
+/* ---- товары ---- */
+function paintStatus(){$('bOpen').classList.toggle('on',C.open);$('bClosed').classList.toggle('on',!C.open)}
+function setOpen(v){C.open=v;paintStatus();save();toast(v?'🟢 Магазин открыт':'🔴 Магазин закрыт')}
+function vis(){const q=($('q').value||'').trim().toLowerCase();return P.filter(p=>!q||(p.name+' '+p.cat).toLowerCase().includes(q))}
+function draw(){
+  const v=vis();let h='';
+  for(const g in GR){
+    const items=v.filter(p=>p.group===g);if(!items.length)continue;
+    h+='<div class="grp">'+GR[g]+'</div><div class="card" style="padding:4px 14px">';
+    for(const p of items){
+      const k=key(p),pr=C.prices[k]??p.price,st=C.stock[k],has=st!==undefined&&st!=='',out=has&&+st<=0;
+      h+='<div class="it'+(C.prices[k]!==undefined||has?' chg':'')+(out?' out':'')+'" data-k="'+esc(k)+'"><div><b>'+p.icon+' '+esc(p.name)+'</b><small>'+esc(p.cat)+(out?' · НЕТ В НАЛИЧИИ':has?' · осталось '+st:'')+'</small></div>'+
+       '<input type="number" inputmode="numeric" min="15" value="'+pr+'" onchange="setPrice(this)">'+
+       '<div class="st"><button onclick="step(this,-1)">−</button><input type="number" inputmode="numeric" min="0" placeholder="∞" value="'+(has?st:'')+'" onchange="setStock(this)"><button onclick="step(this,1)">+</button></div></div>';
+    }
+    h+='</div>';
+  }
+  $('list').innerHTML=h||'<div class="card muted">Ничего не найдено</div>';
+}
+const kOf=el=>el.closest('.it').dataset.k;
+function setPrice(el){const k=kOf(el),p=P.find(x=>key(x)===k);let v=Math.round(+el.value);if(!v||v<15){v=15;toast('Минимум 15 ₴ (15 ⭐)')}if(v===p.price)delete C.prices[k];else C.prices[k]=v;el.value=v;save()}
+function setStock(el){const k=kOf(el);if(el.value==='')delete C.stock[k];else C.stock[k]=Math.max(0,Math.round(+el.value));save();draw()}
+function step(b,d){const el=b.parentNode.querySelector('input'),k=kOf(el),cur=C.stock[k]===undefined?0:+C.stock[k];C.stock[k]=Math.max(0,cur+d);save();draw()}
+function bulkSet(){const n=$('bulk').value,v=vis();if(!v.length)return;v.forEach(p=>{if(n==='')delete C.stock[key(p)];else C.stock[key(p)]=Math.max(0,Math.round(+n))});save();draw();toast(n===''?'Лимит снят':'Остаток '+n+' поставлен: '+v.length+' шт.')}
+
+/* ---- сохранение ---- */
+let st2;
+function cfgObj(){return{open:C.open,closedText:(C.closedText||'').trim(),prices:C.prices,stock:C.stock}}
+async function pub(){if(!DBON)return;try{await api('/config.json','PUT',cfgObj());$('cloud').textContent='☁ сохранено на сайт'}catch(e){$('cloud').textContent='⚠ не сохранилось';toast('Не сохранилось, проверь связь')}}
+function save(){if(DBON){$('cloud').textContent='☁ сохраняю…';clearTimeout(st2);st2=setTimeout(pub,700)}else{try{localStorage.setItem('atomicAdminDraft',JSON.stringify(cfgObj()))}catch(e){}$('cloud').textContent='💾 только на этом телефоне — скачай config.js'}}
+function dl(){const t='/* ATOMIC SHOP — настройки. Создано в админке. */\nwindow.ATOMIC_CONFIG='+JSON.stringify(cfgObj(),null,1)+';\n',b=new Blob([t],{type:'text/javascript'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='config.js';document.body.appendChild(a);a.click();a.remove();toast('config.js скачан')}
+let tt;function toast(m,ms){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),ms||2000)}
+</script>
+</body></html>
