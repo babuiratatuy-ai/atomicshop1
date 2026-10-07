@@ -21,8 +21,8 @@ button.sec{background:#1b2519;color:var(--tx);border:1px solid var(--line)}
 button.g{background:#1d6b1a;color:#fff}button.y{background:var(--yel)}button.r{background:#a62a20;color:#fff}button.b{background:#2a6fd6;color:#fff}
 .top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0 10px}
 #cloud{font-size:12px;color:var(--mut)}
-.tabs{position:sticky;top:0;z-index:6;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#070907f0;backdrop-filter:blur(10px);padding:8px 0}
-.tabs button{background:#1b2519;color:var(--mut);border:1px solid var(--line);padding:12px 4px;font-size:13px}
+.tabs{position:sticky;top:0;z-index:6;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#070907f0;backdrop-filter:blur(10px);padding:8px 0}
+.tabs button{background:#1b2519;color:var(--mut);border:1px solid var(--line);padding:12px 2px;font-size:12px}
 .tabs button.on{background:var(--gold);color:#000}
 .tabs i{font-style:normal;background:var(--red);color:#fff;border-radius:99px;padding:1px 7px;margin-left:5px;font-size:11px}
 .pane{display:none}.pane.on{display:block}
@@ -59,6 +59,18 @@ ol{padding-left:18px;margin:8px 0 0}ol li{margin:6px 0}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#fff;color:#000;font-weight:800;padding:10px 16px;border-radius:99px;opacity:0;transition:.25s;z-index:20;pointer-events:none;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%)}
 #lock{max-width:360px;margin:12vh auto 0}#app{display:none}
+.chRow{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer}.chRow.un{border-color:var(--green);box-shadow:0 0 14px #39ff1422}
+.chRow>div:first-child{min-width:0;flex:1}.chRow .muted{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.chR{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto}.chR button{padding:6px 10px;font-size:12px}
+.sid{font:900 17px "Courier New",monospace;color:var(--gold);letter-spacing:2px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-left:8px;box-shadow:0 0 8px var(--red)}
+.chHead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.chHead button{padding:9px 11px;font-size:12.5px}
+.chMsgs{height:min(52vh,460px);overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#060906;border:1px solid var(--line);border-radius:14px}
+.msg{max-width:84%;padding:8px 12px;border-radius:14px;font-size:14px;word-break:break-word;white-space:pre-wrap}.msg small{display:block;opacity:.55;font-size:10.5px;margin-top:3px}
+.msg.cu{align-self:flex-start;background:#1b2519;border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.me{align-self:flex-end;background:var(--gold);color:#000;border-bottom-right-radius:4px}
+.chQa{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px}.chQa button{white-space:nowrap;background:#1b2519;color:var(--tx);border:1px solid var(--line);padding:8px 12px;font-size:12.5px}
+.ordId{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 6px}.ordId button{padding:5px 10px;font-size:12px}
 </style></head><body>
 
 <div id="lock" class="card">
@@ -74,7 +86,8 @@ ol{padding-left:18px;margin:8px 0 0}ol li{margin:6px 0}
   <div class="tabs">
     <button id="t-orders" class="on" onclick="tab('orders')">📥 ЗАКАЗЫ<i id="nNew" style="display:none">0</i></button>
     <button id="t-prod" onclick="tab('prod')">📦 ТОВАРЫ</button>
-    <button id="t-set" onclick="tab('set')">⚙️ ДОПОЛНИТЕЛЬНО</button>
+    <button id="t-chats" onclick="tab('chats')">💬 ЧАТЫ<i id="nChat" style="display:none">0</i></button>
+    <button id="t-set" onclick="tab('set')">⚙️ ЕЩЁ</button>
   </div>
 
   <div class="pane on" id="p-orders">
@@ -89,8 +102,22 @@ ol{padding-left:18px;margin:8px 0 0}ol li{margin:6px 0}
       <div class="muted">Поставить остаток всем товарам из списка ниже (пусто = без лимита):</div>
       <div class="row"><input type="number" id="bulk" min="0" placeholder="Сколько, например 10"><button onclick="bulkSet()" style="margin-top:8px">ПРИМЕНИТЬ</button></div>
     </div>
+    <div id="setsBox"></div>
     <div class="hd"><span>Товар</span><span>Цена ₴</span><span>Сколько в наличии</span></div>
     <div id="list"></div>
+  </div>
+
+  <div class="pane" id="p-chats">
+    <div id="chListWrap">
+      <input type="text" id="chq" placeholder="🔎 Найти по ID клиента (например K7P2QX)" oninput="drawChats()">
+      <div id="chList" style="margin-top:10px"></div>
+    </div>
+    <div id="chView" style="display:none">
+      <div class="chHead"><button class="sec" onclick="closeChat()">← Назад</button><div>🆔 <b class="sid" id="chSid"></b></div><button class="sec" onclick="cpyT($('chSid').textContent,'ID скопирован')">📋 Копировать ID</button></div>
+      <div class="chMsgs" id="chMsgs"></div>
+      <div class="chQa"><button onclick="chSend('Привет! Чем могу помочь?')">👋 Привет</button><button onclick="chSend('Подождите немного, скоро отвечу 🙏')">🕐 Подождите</button><button onclick="chSend('Оплата получена ✅ Сейчас выдам заказ')">✅ Оплата ок</button><button onclick="chSend('Заказ выдан 📦 Спасибо за покупку!')">📦 Выдан</button><button onclick="chSend('⭐ Звёзды принимаю только в личке Telegram: @AT0M1C_C4')">⭐ Звёзды в ЛС</button></div>
+      <div class="row"><input type="text" id="chIn" maxlength="500" placeholder="Ответ клиенту…" autocomplete="off"><button onclick="chSend()" style="margin-top:8px;flex:0 0 58px">➤</button></div>
+    </div>
   </div>
 
   <div class="pane" id="p-set">
@@ -103,9 +130,31 @@ ol{padding-left:18px;margin:8px 0 0}ol li{margin:6px 0}
       <input type="text" id="ctext" placeholder="Текст покупателям, когда закрыто" oninput="C.closedText=this.value;save()">
     </div>
     <div class="card">
+      <b>🔥 Акция на сайте</b>
+      <div class="status" style="margin-top:10px">
+        <button id="sOn" class="open" onclick="saleEdit({on:true})">🟢 ВКЛЮЧЕНА</button>
+        <button id="sOff" class="closed" onclick="saleEdit({on:false})">🔴 ВЫКЛЮЧЕНА</button>
+      </div>
+      <div class="muted" style="margin-top:10px">На что скидка</div>
+      <select id="sGr" onchange="saleEdit({group:this.value})" style="width:100%;margin-top:6px;background:#060906;border:1px solid var(--line);border-radius:9px;color:var(--tx);padding:10px"><option value="armor">🛡 Броня</option><option value="weapon">🔫 Оружие</option><option value="aviation">🎯 АВМ</option><option value="extras">🎒 Допы</option><option value="escort">🗺 Сопроводы</option></select>
+      <div class="row"><div><div class="muted" style="margin-top:10px">Скидка, %</div><input type="number" id="sPct" min="1" max="90" onchange="saleEdit({pct:Math.min(90,Math.max(1,Math.round(+this.value)||1))})"></div><div><div class="muted" style="margin-top:10px">Кончается (по твоему времени)</div><input type="datetime-local" id="sUntil" onchange="saleEdit({until:this.value})" style="background:#060906;border:1px solid var(--line);border-radius:9px;color:var(--tx);padding:10px;width:100%;margin-top:8px"></div></div>
+    </div>
+    <div class="card">
+      <b>🧩 Скидка комплектов</b>
+      <div class="muted">Для готовых комплектов, конструктора и подбора под бюджет</div>
+      <input type="number" id="bd" min="0" max="50" placeholder="Например 3" onchange="C.bd=Math.min(50,Math.max(0,Math.round(+this.value)||0));paintSale();save();toast('Скидка комплектов '+C.bd+'%')">
+    </div>
+    <div class="card">
+      <b>🟢 Время «Продавец в сети»</b>
+      <div class="muted">По Киеву. Вне этих часов покупатели видят «Продавец офлайн»</div>
+      <div class="row"><input type="number" id="svFrom" min="0" max="24" placeholder="С (час)" onchange="sellerEdit()"><input type="number" id="svTo" min="0" max="24" placeholder="До (час)" onchange="sellerEdit()"></div>
+      <input type="text" id="svRep" maxlength="40" placeholder="Как быстро отвечаешь, например 5-10 мин" onchange="sellerEdit()">
+    </div>
+    <div class="card">
       <b>Сервис</b>
       <div class="acts two" style="margin-top:10px">
         <button class="sec" onclick="clearOld()">🧹 Убрать выданные и отклонённые заказы</button>
+        <button class="sec" onclick="copyRules()">📋 Скопировать правила базы (для чатов)</button>
         <button class="sec" onclick="dl()">⬇ Скачать config.js</button>
         <button class="sec" onclick="soundOn=!soundOn;toast(soundOn?'🔔 Звук включён':'🔕 Звук выключен')">🔔 Звук заказов вкл/выкл</button>
         <button class="sec" onclick="logout()">🚪 Выйти</button>
@@ -130,13 +179,13 @@ ol{padding-left:18px;margin:8px 0 0}ol li{margin:6px 0}
 
 <script>
 const ADMIN_PASS='atom2026'; /* пароль только для режима БЕЗ базы; с базой вход по email Firebase */
-const P=[{"name": "Броник", "cat": "6 уровень", "price": 20, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "6 уровень", "price": 20, "icon": "⛑️", "group": "armor"}, {"name": "Броник", "cat": "Кобра", "price": 25, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "Кобра", "price": 25, "icon": "⛑️", "group": "armor"}, {"name": "Броник", "cat": "Сталик", "price": 30, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "Сталик", "price": 30, "icon": "⛑️", "group": "armor"}, {"name": "МК-Вышка", "cat": "МК", "price": 20, "icon": "⚔️", "group": "weapon"}, {"name": "МК-Сталик", "cat": "МК", "price": 30, "icon": "⚔️", "group": "weapon"}, {"name": "МК-Кобра", "cat": "МК", "price": 25, "icon": "⚔️", "group": "weapon"}, {"name": "Вышка", "cat": "Калаш", "price": 20, "icon": "🔥", "group": "weapon"}, {"name": "Сталик", "cat": "Калаш", "price": 30, "icon": "🔥", "group": "weapon"}, {"name": "Кобра", "cat": "Калаш", "price": 25, "icon": "🔥", "group": "weapon"}, {"name": "Пластина", "cat": "Допы", "price": 20, "icon": "🛡️", "group": "extras"}, {"name": "Теплак", "cat": "Допы", "price": 20, "icon": "🌡️", "group": "extras"}, {"name": "Рюкзак", "cat": "Допы", "price": 20, "icon": "🎒", "group": "extras"}, {"name": "5 карта", "cat": "Сопроводы", "price": 50, "icon": "🗺️", "group": "escort"}, {"name": "6 карта", "cat": "Сопроводы", "price": 70, "icon": "🗺️", "group": "escort"}, {"name": "7 карта", "cat": "Сопроводы", "price": 95, "icon": "🗺️", "group": "escort"}, {"name": "8 карта", "cat": "Сопроводы", "price": 150, "icon": "🗺️", "group": "escort"}, {"name": "Вышка", "cat": "АВМ", "price": 30, "icon": "🎯", "group": "aviation"}, {"name": "Сталик", "cat": "АВМ", "price": 38, "icon": "🎯", "group": "aviation"}, {"name": "Кобра", "cat": "АВМ", "price": 45, "icon": "🎯", "group": "aviation"}, {"name": "AUG-Вышка", "cat": "AUG", "price": 20, "icon": "🔫", "group": "weapon"}, {"name": "AUG-Кобра", "cat": "AUG", "price": 25, "icon": "🔫", "group": "weapon"}, {"name": "AUG-Сталик", "cat": "AUG", "price": 30, "icon": "🔫", "group": "weapon"}, {"name": "М416-Вышка", "cat": "М416", "price": 20, "icon": "💥", "group": "weapon"}, {"name": "М416-Кобра", "cat": "М416", "price": 25, "icon": "💥", "group": "weapon"}, {"name": "М416-Сталик", "cat": "М416", "price": 30, "icon": "💥", "group": "weapon"}];
+const P=[{"name": "Броник", "cat": "6 уровень", "price": 20, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "6 уровень", "price": 20, "icon": "⛑️", "group": "armor"}, {"name": "Броник", "cat": "Кобра", "price": 25, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "Кобра", "price": 25, "icon": "⛑️", "group": "armor"}, {"name": "Броник", "cat": "Сталик", "price": 30, "icon": "🦺", "group": "armor"}, {"name": "Каска", "cat": "Сталик", "price": 30, "icon": "⛑️", "group": "armor"}, {"name": "МК-Вышка", "cat": "МК", "price": 20, "icon": "⚔️", "group": "weapon"}, {"name": "МК-Сталик", "cat": "МК", "price": 30, "icon": "⚔️", "group": "weapon"}, {"name": "МК-Кобра", "cat": "МК", "price": 25, "icon": "⚔️", "group": "weapon"}, {"name": "Вышка", "cat": "Калаш", "price": 20, "icon": "🔥", "group": "weapon"}, {"name": "Сталик", "cat": "Калаш", "price": 30, "icon": "🔥", "group": "weapon"}, {"name": "Кобра", "cat": "Калаш", "price": 25, "icon": "🔥", "group": "weapon"}, {"name": "Пластина", "cat": "Допы", "price": 20, "icon": "🛡️", "group": "extras"}, {"name": "Теплак", "cat": "Допы", "price": 20, "icon": "🌡️", "group": "extras"}, {"name": "Рюкзак", "cat": "Допы", "price": 20, "icon": "🎒", "group": "extras"}, {"name": "5 карта", "cat": "Сопроводы", "price": 50, "icon": "🗺️", "group": "escort"}, {"name": "7 карта", "cat": "Сопроводы", "price": 95, "icon": "🗺️", "group": "escort"}, {"name": "8 карта", "cat": "Сопроводы", "price": 150, "icon": "🗺️", "group": "escort"}, {"name": "Вышка", "cat": "АВМ", "price": 30, "icon": "🎯", "group": "aviation"}, {"name": "Сталик", "cat": "АВМ", "price": 38, "icon": "🎯", "group": "aviation"}, {"name": "Кобра", "cat": "АВМ", "price": 45, "icon": "🎯", "group": "aviation"}, {"name": "AUG-Вышка", "cat": "AUG", "price": 20, "icon": "🔫", "group": "weapon"}, {"name": "AUG-Кобра", "cat": "AUG", "price": 25, "icon": "🔫", "group": "weapon"}, {"name": "AUG-Сталик", "cat": "AUG", "price": 30, "icon": "🔫", "group": "weapon"}, {"name": "М416-Вышка", "cat": "М416", "price": 20, "icon": "💥", "group": "weapon"}, {"name": "М416-Кобра", "cat": "М416", "price": 25, "icon": "💥", "group": "weapon"}, {"name": "М416-Сталик", "cat": "М416", "price": 30, "icon": "💥", "group": "weapon"}];
 const GR={armor:'🛡 БРОНЯ',weapon:'🔫 ОРУЖИЕ',aviation:'🎯 АВИАЦИЯ (АВМ)',extras:'🎒 ДОПЫ',escort:'🗺 СОПРОВОДЫ'};
 const $=id=>document.getElementById(id);
 const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const key=p=>p.name+'|'+p.cat;
 const DB=window.ATOMIC_DB||{},DBON=!!(DB.url&&DB.apiKey),U=(DB.url||'').replace(/\/$/,'');
-const RULES='{\n "rules": {\n  "config": {".read": true, ".write": "auth != null"},\n  "orders": {\n   ".read": "auth != null",\n   ".write": "auth != null",\n   "$id": {\n    ".read": true,\n    ".write": "!data.exists()",\n    "status": {".validate": "newData.val() == \'new\' || auth != null"}\n   }\n  }\n }\n}';
+const RULES='{\n "rules": {\n  "config": {".read": true, ".write": "auth != null"},\n  "orders": {\n   ".read": "auth != null",\n   ".write": "auth != null",\n   "$id": {\n    ".read": true,\n    ".write": "!data.exists()",\n    "status": {".validate": "newData.val() == \'new\' || auth != null"}\n   }\n  },\n  "chatmeta": {\n   ".read": "auth != null",\n   ".write": "auth != null",\n   ".indexOn": ["t"],\n   "$cid": {\n    ".write": "$cid.length >= 12 && $cid.length <= 40",\n    ".validate": "newData.hasChildren([\'sid\', \'t\'])",\n    "sid": {".validate": "newData.isString() && newData.val().length <= 8"},\n    "last": {".validate": "newData.isString() && newData.val().length <= 120"},\n    "t": {".validate": "newData.isNumber()"}\n   }\n  },\n  "chatmsgs": {\n   ".read": "auth != null",\n   ".write": "auth != null",\n   "$cid": {\n    ".read": "$cid.length >= 12",\n    "$mid": {\n     ".write": "!data.exists() && $cid.length >= 12 && $cid.length <= 40",\n     ".validate": "newData.hasChildren([\'from\', \'text\', \'t\']) && newData.child(\'text\').isString() && newData.child(\'text\').val().length <= 500 && (newData.child(\'from\').val() == \'c\' || (newData.child(\'from\').val() == \'a\' && auth != null))"\n    }\n   }\n  }\n }\n}';
 $('rules').textContent=RULES;
 function copyRules(){try{navigator.clipboard.writeText(RULES).then(()=>toast('Правила скопированы'))}catch(e){toast('Не вышло')}}
 let C={open:true,closedText:'',prices:{},stock:{}},O={},seen=null,F='active',soundOn=true,TOK=null,EXP=0,pt;
@@ -163,15 +212,15 @@ async function enter(){
   let src={};
   if(DBON){try{src=await api('/config.json')||{}}catch(e){toast('Нет связи с базой');src=window.ATOMIC_CONFIG||{}}}
   else{try{src=JSON.parse(localStorage.getItem('atomicAdminDraft')||'null')||window.ATOMIC_CONFIG||{}}catch(e){src=window.ATOMIC_CONFIG||{}}}
-  C={open:src.open!==false,closedText:src.closedText||'',prices:src.prices||{},stock:src.stock||{}};
-  $('ctext').value=C.closedText;paintStatus();draw();
+  C={open:src.open!==false,closedText:src.closedText||'',prices:src.prices||{},stock:src.stock||{},sale:src.sale,bd:src.bd,seller:src.seller,sets:src.sets||{},custom:src.custom||[]};
+  $('ctext').value=C.closedText;paintStatus();paintSale();draw();drawSets();
   $('setup').style.display=DBON?'none':'block';
   if(DBON){poll();pt=setInterval(poll,5000);$('cloud').textContent='☁ на связи'}
   else{$('ords').innerHTML='<div class="card muted">Заказы в админку не приходят: подключи базу (вкладка «Дополнительно» → «Подключение базы»). Пока заказы идут в Telegram.</div>';$('chips').innerHTML=''}
 }
 (async()=>{if(DBON){try{await refresh();await enter()}catch(e){}}})();
 document.addEventListener('click',()=>ctx(),{once:true});
-function tab(t){['orders','prod','set'].forEach(x=>{$('p-'+x).classList.toggle('on',x===t);$('t-'+x).classList.toggle('on',x===t)})}
+function tab(t){['orders','prod','chats','set'].forEach(x=>{$('p-'+x).classList.toggle('on',x===t);$('t-'+x).classList.toggle('on',x===t)});if(t==='chats')drawChats()}
 
 /* ---- заказы ---- */
 const STN={new:'НОВЫЙ',wait:'ПОДОЖДИТЕ',accepted:'ПРИНЯТ',declined:'ОТКЛОНЁН',done:'ВЫДАН'};
@@ -184,7 +233,7 @@ async function poll(){
     const ks=Object.keys(d);
     if(seen===null)seen=new Set(ks);
     else for(const k of ks)if(!seen.has(k)){seen.add(k);if(d[k].status==='new'){ding();toast('🔔 Новый заказ №'+d[k].oid,3000)}}
-    $('cloud').textContent='☁ на связи';drawOrders();
+    $('cloud').textContent='☁ на связи';drawOrders();pollChats();
   }catch(e){$('cloud').textContent='⚠ нет связи'}
 }
 function drawOrders(){
@@ -200,7 +249,7 @@ function drawOrders(){
     const btn=(s,l,c)=>'<button class="'+c+'" onclick="setSt(\''+k+'\',\''+s+'\')">'+l+'</button>';
     let a=(st==='new'||st==='wait')?'<div class="acts">'+btn('accepted','✅ Принять','g')+btn('wait','🕐 Подождите','b')+btn('declined','❌ Отклонить','r')+'</div>':st==='accepted'?'<div class="acts two">'+btn('done','📦 Выдано','g')+btn('declined','❌ Отменить','r')+'</div>':'';
     return '<div class="ord s-'+st+'"><div class="oh"><span>№'+esc(o.oid)+' · '+new Date(o.t).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</span><span class="pill">'+STN[st]+'</span></div>'+
-     '<div class="pid" onclick="cpy(\''+esc(o.pubg)+'\')">🎮 '+esc(o.pubg)+'</div>'+
+     '<div class="pid" onclick="cpy(\''+esc(o.pubg)+'\')">🎮 '+esc(o.pubg)+'</div>'+(o.sid?'<div class="ordId muted">🆔 <b class="sid">'+esc(o.sid)+'</b><button class="sec" onclick="cpyT(\''+esc(o.sid)+'\',\'ID скопирован\')">📋 ID</button><button class="b" onclick="openChatSid(\''+esc(o.sid)+'\')">💬 Написать</button></div>':'')+
      L.map(l=>'<div class="ln"><span>'+esc(l.name)+'</span><b>'+(l.price?'₴'+l.price:'🎁')+'</b></div>').join('')+
      '<div class="tot"><span>Итого'+(o.disc?' (скидка −₴'+o.disc+')':'')+'</span><span>₴'+o.total+' · ⭐'+o.total+(o.cur==='RUB'?' · '+Math.round(o.total*2)+'₽':'')+'</span></div>'+
      '<div class="muted">'+esc(o.pay||'')+'</div>'+(o.note?'<div class="note">💬 '+esc(o.note)+'</div>':'')+(a?'<div style="margin-top:10px">'+a+'</div>':'')+'</div>';
@@ -249,14 +298,125 @@ function draw(){
   $('list').innerHTML=h||'<div class="card muted">Ничего не найдено</div>';
 }
 const kOf=el=>el.closest('.it').dataset.k;
-function setPrice(el){const k=kOf(el),p=P.find(x=>key(x)===k);let v=Math.round(+el.value);if(!v||v<15){v=15;toast('Минимум 15 ₴ (15 ⭐)')}if(v===p.price)delete C.prices[k];else C.prices[k]=v;el.value=v;save()}
+function setPrice(el){const k=kOf(el),p=P.find(x=>key(x)===k);let v=Math.round(+el.value);if(!v||v<15){v=15;toast('Минимум 15 ₴ (15 ⭐)')}if(v===p.price)delete C.prices[k];else C.prices[k]=v;el.value=v;save();drawSets()}
 function setStock(el){const k=kOf(el);if(el.value==='')delete C.stock[k];else C.stock[k]=Math.max(0,Math.round(+el.value));save();draw()}
 function step(b,d){const el=b.parentNode.querySelector('input'),k=kOf(el),cur=C.stock[k]===undefined?0:+C.stock[k];C.stock[k]=Math.max(0,cur+d);save();draw()}
 function bulkSet(){const n=$('bulk').value,v=vis();if(!v.length)return;v.forEach(p=>{if(n==='')delete C.stock[key(p)];else C.stock[key(p)]=Math.max(0,Math.round(+n))});save();draw();toast(n===''?'Лимит снят':'Остаток '+n+' поставлен: '+v.length+' шт.')}
 
 /* ---- сохранение ---- */
+/* ---- чаты с покупателями ---- */
+let CH={},CHK=null,chT=null,chLast='',chSeen=null,chErr=false;
+const tmf=t=>new Date(t).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+function cpyT(t,m){try{navigator.clipboard.writeText(t).then(()=>toast(m||'Скопировано'),fb)}catch(e){fb()}function fb(){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m||'Скопировано')}catch(e){toast('Не вышло')}a.remove()}}
+const isUn=m=>m.from==='c'&&(m.t||0)>(m.aa||0);
+async function pollChats(){
+  if(!DBON)return;
+  try{
+    let d;
+    try{d=await api('/chatmeta.json?orderBy=%22t%22&limitToLast=80')}catch(e){d=await api('/chatmeta.json')}
+    d=d||{};CH=d;chErr=false;
+    const first=chSeen===null;if(first)chSeen={};let un=0;
+    for(const k in d){const m=d[k],t=m.t||0;
+      if(isUn(m))un++;
+      if(!first&&m.from==='c'&&t>(chSeen[k]||0)&&k!==CHK){ding();toast('💬 Новое сообщение · ID '+(m.sid||'?'),3000)}
+      chSeen[k]=t}
+    $('nChat').style.display=un?'inline':'none';$('nChat').textContent=un;
+  }catch(e){chErr=true}
+  if(CHK===null)drawChats();
+}
+function drawChats(){
+  const L=$('chList');if(!L)return;
+  if(!DBON){L.innerHTML='<div class="card muted">Чаты работают только с подключённой базой.</div>';return}
+  if(chErr){L.innerHTML='<div class="card"><b>Нужно обновить правила базы</b><p class="muted">Firebase → Realtime Database → вкладка Rules → вставь новые правила → Publish. После этого чаты заработают.</p><button onclick="copyRules()">📋 Скопировать правила</button></div>';return}
+  const q=($('chq').value||'').trim().toLowerCase();
+  const ks=Object.keys(CH).sort((a,b)=>(CH[b].t||0)-(CH[a].t||0)).filter(k=>{const m=CH[k];return !q||(m.sid||'').toLowerCase().includes(q)||(m.last||'').toLowerCase().includes(q)});
+  L.innerHTML=ks.length?ks.map(k=>{const m=CH[k],un=isUn(m);
+    return '<div class="chRow'+(un?' un':'')+'" onclick="openChat(\''+k+'\')"><div><b class="sid">'+esc(m.sid||'?')+'</b>'+(un?'<i class="dot"></i>':'')+'<div class="muted">'+(m.last?(m.from==='a'?'Ты: ':'')+esc(m.last):'Пока без сообщений')+'</div></div><div class="chR"><span class="muted">'+(m.t?tmf(m.t):'')+'</span><button class="sec" onclick="event.stopPropagation();cpyT(\''+esc(m.sid||'')+'\',\'ID скопирован\')">📋 ID</button></div></div>'}).join(''):'<div class="card muted" style="text-align:center">'+(q?'Ничего не найдено':'Чатов пока нет 👌')+'</div>';
+}
+function openChat(k){
+  CHK=k;const m=CH[k]||{};$('chListWrap').style.display='none';$('chView').style.display='block';
+  $('chSid').textContent=m.sid||'?';chLast='';$('chMsgs').innerHTML='';
+  loadMsgs(true);clearInterval(chT);chT=setInterval(()=>loadMsgs(),3000);markRead();
+}
+function closeChat(){CHK=null;clearInterval(chT);$('chView').style.display='none';$('chListWrap').style.display='block';drawChats();pollChats()}
+function openChatSid(s){const k=Object.keys(CH).find(x=>CH[x].sid===s);if(!k){toast('Чата ещё нет — клиент его не открывал');return}tab('chats');openChat(k)}
+async function markRead(){
+  if(!CHK)return;const m=CH[CHK]||{},t=Math.max(Date.now(),m.t||0);
+  try{await api('/chatmeta/'+CHK+'.json','PATCH',{aa:t});if(CH[CHK])CH[CHK].aa=t;const un=Object.values(CH).filter(isUn).length;$('nChat').style.display=un?'inline':'none';$('nChat').textContent=un}catch(e){}
+}
+async function loadMsgs(first){
+  const k=CHK;if(!k)return;
+  try{
+    const d=await api('/chatmsgs/'+k+'.json?orderBy=%22%24key%22&limitToLast=100')||{};
+    if(k!==CHK)return;
+    const ids=Object.keys(d).sort((a,b)=>a<b?-1:1),sig=ids.length+':'+(ids[ids.length-1]||'');
+    if(sig===chLast&&first!==true)return;
+    const grew=chLast!==''&&sig!==chLast;chLast=sig;
+    $('chMsgs').innerHTML=ids.length?ids.map(i=>{const m=d[i];return '<div class="msg '+(m.from==='a'?'me':'cu')+'"><div>'+esc(m.text)+'</div><small>'+tmf(m.t)+'</small></div>'}).join(''):'<div class="muted" style="margin:auto;text-align:center">Сообщений пока нет — можешь написать первым</div>';
+    $('chMsgs').scrollTop=1e9;
+    if(grew&&d[ids[ids.length-1]].from==='c'){ding();markRead()}
+  }catch(e){}
+}
+async function chSend(txt){
+  const inp=$('chIn'),text=(typeof txt==='string'?txt:inp.value).trim().slice(0,500);
+  if(!text||!CHK)return;if(typeof txt!=='string')inp.value='';
+  const t=Date.now(),k=CHK;
+  try{
+    await api('/chatmsgs/'+k+'.json','POST',{from:'a',text,t});
+    const patch={t,last:text.slice(0,100),from:'a',aa:t};
+    await api('/chatmeta/'+k+'.json','PATCH',patch);
+    if(CH[k])Object.assign(CH[k],patch);loadMsgs(true);
+  }catch(e){toast('Не отправилось, проверь связь');if(typeof txt!=='string')inp.value=text}
+}
+$('chIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();chSend()}});
+
+/* ---- акция, комплекты, продавец ---- */
+const SDEF={on:true,group:'extras',pct:20,until:'2026-10-07T23:59'};
+function paintSale(){
+  const s=Object.assign({},SDEF,C.sale||{});
+  $('sOn').classList.toggle('on',s.on!==false);$('sOff').classList.toggle('on',s.on===false);
+  $('sGr').value=s.group;$('sPct').value=s.pct;$('sUntil').value=s.until;
+  $('bd').value=C.bd===undefined?3:C.bd;
+  const v=Object.assign({from:12,to:24,reply:''},C.seller||{});$('svFrom').value=v.from;$('svTo').value=v.to;$('svRep').value=v.reply||'';
+}
+function saleEdit(p){C.sale=Object.assign({},SDEF,C.sale||{},p);paintSale();save();toast(C.sale.on===false?'🔴 Акция выключена':'🔥 Акция сохранена')}
+function sellerEdit(){const n=(id,d)=>{const v=$(id).value;return v===''?d:Math.min(24,Math.max(0,Math.round(+v)))};C.seller={from:n('svFrom',12),to:n('svTo',24),reply:$('svRep').value.trim()};paintSale();save();toast('Сохранено')}
+
+/* ---- сеты (комплекты) ---- */
+const BS=[['Старт',[['Броник','6 уровень'],['Каска','6 уровень']]],['Кобра',[['Броник','Кобра'],['Каска','Кобра']]],['Сталик',[['Броник','Сталик'],['Каска','Сталик']]],['Полный Сталик',[['Броник','Сталик'],['Каска','Сталик'],['Сталик','Калаш']]],['Снайпер Вышка',[['Броник','6 уровень'],['Каска','6 уровень'],['Вышка','АВМ']]],['Снайпер Кобра',[['Броник','Кобра'],['Каска','Кобра'],['Кобра','АВМ']]],['Снайпер Сталик',[['Броник','Сталик'],['Каска','Сталик'],['Сталик','АВМ']]]];
+let NS=new Set();
+const pOf=r=>P.find(x=>x.name===r[0]&&x.cat===r[1]);
+const setsAll=()=>BS.map(b=>({name:b[0],items:b[1]})).concat((C.custom||[]).map(b=>({name:b.name,items:b.items,custom:true})));
+const autoPrice=it=>Math.round(it.reduce((a,r)=>{const p=pOf(r);return a+(p?(C.prices[key(p)]??p.price):0)},0)*1.05/5)*5;
+function drawSets(){
+  const box=$('setsBox');if(!box)return;C.sets=C.sets||{};
+  box.innerHTML='<div class="grp">🧩 СЕТЫ</div><div class="muted" style="margin-bottom:6px">Пусто в цене = авто (сумма вещей +5%). Свою цену впиши сам. «Скрыть» — сет пропадёт с сайта.</div><div class="card" style="padding:4px 14px">'+
+  setsAll().map(s=>{const o=C.sets[s.name]||{},off=!!o.off,au=autoPrice(s.items);
+   return '<div class="it'+(o.price||off?' chg':'')+(off?' out':'')+'" data-s="'+esc(s.name)+'" style="grid-template-columns:1fr 74px 96px"><div><b>🧩 '+esc(s.name)+'</b><small>'+esc(s.items.map(r=>r[0]+' '+r[1]).join(' + '))+(off?' · СКРЫТ':'')+'</small></div>'+
+   '<input type="number" inputmode="numeric" min="15" placeholder="'+au+'" value="'+(o.price||'')+'" onchange="setSetPrice(this)">'+
+   '<div style="display:flex;gap:4px"><button class="sec" style="padding:9px 6px;flex:1" onclick="toggleSet(this)">'+(off?'👁':'🙈')+'</button>'+(s.custom?'<button class="r" style="padding:9px 6px;flex:1" onclick="delSet(this)">🗑</button>':'')+'</div></div>'}).join('')+'</div>'+
+  '<div class="card"><b>➕ Новый сет</b><input type="text" id="nsName" maxlength="30" placeholder="Название, например «Штурм»"><div class="muted" style="margin-top:8px">Выбери вещи (тап = добавить / убрать), минимум 2:</div><div id="nsPick" style="display:flex;flex-wrap:wrap;gap:6px;max-height:210px;overflow:auto;margin-top:8px"></div><input type="number" id="nsPrice" inputmode="numeric" min="15" placeholder="Цена ₴ (пусто = авто)"><button style="width:100%;margin-top:10px" onclick="addSet()">✅ СОЗДАТЬ СЕТ</button></div>';
+  drawPick();
+}
+function drawPick(){const b=$('nsPick');if(!b)return;b.innerHTML=P.map((p,i)=>'<button class="sec" style="padding:7px 10px;font-size:12.5px;'+(NS.has(i)?'background:var(--green);color:#000':'')+'" onclick="togPick('+i+')">'+p.icon+' '+esc(p.name)+' · '+esc(p.cat)+'</button>').join('')}
+function togPick(i){NS.has(i)?NS.delete(i):NS.add(i);drawPick()}
+const sKey=el=>el.closest('.it').dataset.s;
+function setSetPrice(el){const n=sKey(el);C.sets=C.sets||{};let v=el.value===''?0:Math.round(+el.value);if(el.value!==''&&v<15){v=15;toast('Минимум 15 ₴')}const o=C.sets[n]||{};if(v)o.price=v;else delete o.price;if(Object.keys(o).length)C.sets[n]=o;else delete C.sets[n];save();drawSets();toast(v?'Цена сета '+v+' ₴':'Цена сета авто')}
+function toggleSet(b){const n=sKey(b);C.sets=C.sets||{};const o=C.sets[n]||{};if(o.off)delete o.off;else o.off=true;if(Object.keys(o).length)C.sets[n]=o;else delete C.sets[n];save();drawSets();toast(o.off?'🙈 Сет скрыт':'👁 Сет показан')}
+function delSet(b){const n=sKey(b);if(!confirm('Удалить сет «'+n+'»?'))return;C.custom=(C.custom||[]).filter(x=>x.name!==n);if(C.sets)delete C.sets[n];save();drawSets();toast('Сет удалён')}
+function addSet(){
+  const n=($('nsName').value||'').trim().slice(0,30);
+  if(!n){toast('Впиши название сета');return}
+  if(setsAll().some(s=>s.name.toLowerCase()===n.toLowerCase())){toast('Такое название уже есть');return}
+  if(NS.size<2){toast('Выбери минимум 2 вещи');return}
+  const items=[...NS].sort((a,b)=>a-b).map(i=>[P[i].name,P[i].cat]),pr=Math.round(+$('nsPrice').value)||0;
+  C.custom=(C.custom||[]).concat([{name:n,items}]);C.sets=C.sets||{};
+  if(pr>=15)C.sets[n]={price:pr};
+  NS=new Set();save();drawSets();toast('✅ Сет «'+n+'» создан');
+}
+
 let st2;
-function cfgObj(){return{open:C.open,closedText:(C.closedText||'').trim(),prices:C.prices,stock:C.stock}}
+function cfgObj(){const o={open:C.open,closedText:(C.closedText||'').trim(),prices:C.prices,stock:C.stock};if(C.sale)o.sale=C.sale;if(C.bd!==undefined)o.bd=C.bd;if(C.seller)o.seller=C.seller;if(C.sets&&Object.keys(C.sets).length)o.sets=C.sets;if(C.custom&&C.custom.length)o.custom=C.custom;return o}
 async function pub(){if(!DBON)return;try{await api('/config.json','PUT',cfgObj());$('cloud').textContent='☁ сохранено на сайт'}catch(e){$('cloud').textContent='⚠ не сохранилось';toast('Не сохранилось, проверь связь')}}
 function save(){if(DBON){$('cloud').textContent='☁ сохраняю…';clearTimeout(st2);st2=setTimeout(pub,700)}else{try{localStorage.setItem('atomicAdminDraft',JSON.stringify(cfgObj()))}catch(e){}$('cloud').textContent='💾 только на этом телефоне — скачай config.js'}}
 function dl(){const t='/* ATOMIC SHOP — настройки. Создано в админке. */\nwindow.ATOMIC_CONFIG='+JSON.stringify(cfgObj(),null,1)+';\n',b=new Blob([t],{type:'text/javascript'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='config.js';document.body.appendChild(a);a.click();a.remove();toast('config.js скачан')}

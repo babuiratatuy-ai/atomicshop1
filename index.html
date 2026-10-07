@@ -249,6 +249,16 @@ body{background:transparent!important}
 @media(prefers-reduced-motion:reduce){.card.r-set:before{animation:none}}
 .closedBar{position:relative;z-index:30;background:linear-gradient(90deg,#7a0f0f,#c0392b,#7a0f0f);color:#fff;text-align:center;padding:11px 14px;font-size:14px;font-weight:800;letter-spacing:.4px}.closedCart{background:#c0392b22;border:1px solid #c0392b88;color:#ff8a7d;border-radius:10px;padding:10px 12px;margin:10px 0;font-weight:800;font-size:13px}.stk{font-size:12px;font-weight:800;color:#ffe600;margin:2px 0 6px}.stk.out{color:#ff5a4d}.card.soldout .image{filter:grayscale(1);opacity:.45}.buy:disabled{opacity:.45;cursor:not-allowed}#pvBadge{position:fixed;left:50%;transform:translateX(-50%);bottom:10px;z-index:99999;background:#ffe600;color:#000;font-weight:900;font-size:11px;padding:5px 12px;border-radius:99px;letter-spacing:1px}
 .pickBg{position:fixed;inset:0;z-index:100000;background:#000c;backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:18px}.pickBox{width:min(420px,100%);background:#11150f;border:1px solid #ffffff22;border-radius:16px;padding:20px;display:grid;gap:10px;text-align:center}.pickBox b{font-size:17px}.pickBox .btn{display:block;width:100%}.pickBox .btn small{display:block;font-weight:600;font-size:11.5px;opacity:.75;margin-top:3px;letter-spacing:0}.pickX{background:none;border:0;color:#8b978a;padding:8px;cursor:pointer;font-size:13px}
+.chDot{display:none;width:9px;height:9px;border-radius:50%;background:#ff4d4d;margin-left:6px;vertical-align:middle;box-shadow:0 0 8px #ff4d4d}
+.chId{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#ffffff08;border:1px dashed #d5a84b66;border-radius:12px;padding:10px 12px;margin:8px 0 10px;font-size:13px;color:#cfd5c6}.chId b{font:900 18px "Courier New",monospace;color:var(--gold);letter-spacing:2px}.chId button{border:1px solid #ffffff22;background:#ffffff0d;color:#fff;border-radius:8px;padding:6px 10px;font-weight:800;cursor:pointer}.chId small{flex-basis:100%;color:#8b978a;font-size:11.5px}
+.chBox{height:min(44vh,360px);overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#060906;border:1px solid #ffffff14;border-radius:14px;-webkit-overflow-scrolling:touch}
+.cmsg{max-width:82%;padding:8px 12px;border-radius:14px;font-size:14px;line-height:1.35;word-break:break-word;white-space:pre-wrap}.cmsg small{display:block;opacity:.55;font-size:10.5px;margin-top:3px}
+.cmsg.c{align-self:flex-end;background:linear-gradient(135deg,#d5a84b,#b88a2f);color:#171209;border-bottom-right-radius:4px}
+.cmsg.a{align-self:flex-start;background:#1c2617;border:1px solid #9dbb5555;color:#eef2e0;border-bottom-left-radius:4px}
+.chEmpty{margin:auto;text-align:center;color:#8b978a;font-size:13px;padding:10px;line-height:1.5}
+.chQ{display:flex;gap:6px;overflow-x:auto;padding:10px 0 4px}.chQ button{white-space:nowrap;border:1px solid #9dbb5533;background:#9dbb5512;color:#eef2e0;border-radius:99px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer}
+.chSend{display:flex;gap:8px;margin-top:8px}.chSend input{flex:1;min-width:0;background:#060906;border:1px solid #ffffff22;border-radius:10px;color:#fff;padding:12px;font:inherit;font-size:16px}.chSend input:focus{outline:2px solid var(--gold);border-color:transparent}.chSend button{border:0;border-radius:10px;background:var(--gold);color:#151108;font-weight:900;font-size:18px;padding:0 18px;cursor:pointer}
+.chNote{background:#d5a84b14;border:1px solid #d5a84b55;border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:13px;line-height:1.45;color:#f1e3bd}.chNote a{color:var(--gold);font-weight:800}
 </style>
 </head>
 <body>
@@ -257,7 +267,7 @@ body{background:transparent!important}
 <header class="top"><div class="nav"><div class="brand">☢ ATOMIC <span>SHOP</span></div><nav><a href="#bundles">КОМПЛЕКТЫ</a><a href="#armor">БРОНЯ</a><a href="#weapons">ОРУЖИЕ</a><a href="#aviation">АВМ</a><a href="#extras">ДОПЫ</a><a href="#escorts">СОПРОВОДЫ</a><a href="#" onclick="openCase();return false">КЕЙС</a><a href="#" onclick="openSheet('reviews');return false">ОТЗЫВЫ</a><a href="#" onclick="openSheet('info');return false">FAQ</a><a href="#support">ПОДДЕРЖКА</a></nav><button class="cartBtn" id="curBtn" onclick="toggleCur()" title="Валюта">₴</button><button class="cartBtn" id="lgBtn" onclick="toggleLang()">RU</button><button class="cartBtn" id="sndBtn" onclick="toggleSound()" title="Звук">🔊</button><button class="cartBtn" id="musBtn" onclick="openMusic()" title="Музыка и тема">♫</button><button class="cartBtn" onclick="openCart()">🛒 <span class="cl">КОРЗИНА</span> <b id="cartCount">0</b></button></div></header>
 <div class="saleBar" id="evBar" style="display:none"></div><div class="saleBar" id="hhBar" style="display:none"></div><div class="saleBar" id="saleBar">🔥 АКЦИЯ: <b id="saleTitle"></b> · до конца: <b id="saleTime"></b> <a id="saleLink" href="#extras">ЗАБРАТЬ →</a></div>
 
-<div class="hero"><div><div class="eyebrow">PREMIUM METRO SHOP · FAST • SAFE • CHEAP</div><h1>ATOMIC<br><span>SHOP</span></h1><p>Магазин для игроков Metro Royale. Выбирай экипировку, оружие, допы и сопроводы. Крути рулетку и забирай шанс на бесплатный сопровод.</p><div class="actions"><a class="btn primary" href="#shop">ОТКРЫТЬ МАГАЗИН</a><button class="btn secondary" onclick="openCart()">МОЯ КОРЗИНА</button><button class="btn secondary" onclick="openSheet('bonus')">🎰 РУЛЕТКА</button><a class="btn secondary" href="https://t.me/AT0M1C_C4" target="_blank">📡 ПОДДЕРЖКА</a></div></div><div class="neon"><div class="neonTag">☢ PREMIUM METRO SHOP ☢</div><div class="neonWrap"><span class="neonGlow" aria-hidden="true">ATOMSHOP</span><span class="neonText">ATOMSHOP</span></div><div class="neonBar"></div></div></div>
+<div class="hero"><div><div class="eyebrow">PREMIUM METRO SHOP · FAST • SAFE • CHEAP</div><h1>ATOMIC<br><span>SHOP</span></h1><p>Магазин для игроков Metro Royale. Выбирай экипировку, оружие, допы и сопроводы. Крути рулетку и забирай шанс на бесплатный сопровод.</p><div class="actions"><a class="btn primary" href="#shop">ОТКРЫТЬ МАГАЗИН</a><button class="btn secondary" onclick="openCart()">МОЯ КОРЗИНА</button><button class="btn secondary" onclick="openSheet('bonus')">🎰 РУЛЕТКА</button><a class="btn secondary" href="https://t.me/AT0M1C_C4" target="_blank">📡 ПОДДЕРЖКА</a><button class="btn secondary" onclick="chatOpen()">💬 ЧАТ С МАГАЗИНОМ<i class="chDot"></i></button></div></div><div class="neon"><div class="neonTag">☢ PREMIUM METRO SHOP ☢</div><div class="neonWrap"><span class="neonGlow" aria-hidden="true">ATOMSHOP</span><span class="neonText">ATOMSHOP</span></div><div class="neonBar"></div></div></div>
 
 <div class="tiles">
 <button class="tile" onclick="openCase()"><span>📦</span>КЕЙС</button>
@@ -310,7 +320,8 @@ body{background:transparent!important}
       <p>Напиши в Telegram. Укажи свой ник, товар и способ оплаты — продавец поможет с оформлением.</p>
     </div>
     <div class="actions" style="margin:0">
-      <a class="btn primary" href="https://t.me/AT0M1C_C4" target="_blank">👑 НАПИСАТЬ OWNER</a>
+      <button class="btn primary" onclick="chatOpen()">💬 ЧАТ В ШОПЕ<i class="chDot"></i></button>
+      <a class="btn secondary" href="https://t.me/AT0M1C_C4" target="_blank">👑 НАПИСАТЬ OWNER</a>
       <a class="btn secondary" href="https://t.me/K0dami" target="_blank">⚡ НАПИСАТЬ SELLER</a>
       <a class="btn secondary" href="https://t.me/+cZgpe9V7iJA5ZjIy" target="_blank">⭐ ОТЗЫВЫ</a>
     </div>
@@ -365,7 +376,8 @@ body{background:transparent!important}
 <details><summary>О проекте</summary><p>Неофициальный фан-магазин. Названия игровых объектов используются в рамках фан-проекта.</p></details></div></div></div>
 <div class="sheet" id="sh-history"><div class="sheetBack" onclick="closeSheet()"></div><div class="sheetBox"><div class="sheetHead"><span class="grab"></span><button class="close" onclick="closeSheet()">×</button></div><div class="sheetBody"><div class="sectionHead"><div><div class="muted">🧾 HISTORY</div><h2>ИСТОРИЯ ЗАКАЗОВ</h2></div><div class="muted">ХРАНИТСЯ В ТВОЁМ БРАУЗЕРЕ</div></div><div id="histBox"></div><div class="actions"><button class="btn secondary" onclick="clearHistory()">🗑 ОЧИСТИТЬ ИСТОРИЮ</button></div></div></div></div>
 <div class="sheet" id="sh-x"><div class="sheetBack" onclick="closeSheet()"></div><div class="sheetBox"><div class="sheetHead"><span class="grab"></span><button class="close" onclick="closeSheet()">×</button></div><div class="sheetBody"><div class="sectionHead"><div><h2 id="xT"></h2></div></div><div id="xB"></div></div></div></div>
-<div class="pickBg" id="sendPick" style="display:none" onclick="if(event.target===this)hidePick()"><div class="pickBox"><b>Как оформить заказ?</b><button class="btn primary" onclick="sendTo('tg')">✈️ ОТПРАВИТЬ СРАЗУ<small>откроется Telegram с готовым заказом</small></button><button class="btn secondary" onclick="sendTo('admin')">📨 СМС В ШОП<small>заказ уйдёт в магазин · статус увидишь тут</small></button><button class="pickX" onclick="hidePick()">Отмена</button></div></div>
+<div class="sheet" id="sh-chat"><div class="sheetBack" onclick="closeSheet()"></div><div class="sheetBox"><div class="sheetHead"><span class="grab"></span><button class="close" onclick="closeSheet()">×</button></div><div class="sheetBody"><div class="sectionHead"><div><div class="muted">💬 CHAT</div><h2>ЧАТ С МАГАЗИНОМ</h2></div></div><div class="chId"><span>🆔 Твой ID:</span><b id="chSid">—</b><button onclick="chatCopy()">📋 Копировать</button><small>Пишешь в Telegram — назови этот ID, и я найду твой чат и заказ.</small></div><div class="chNote">⭐ <b>Звёзды — оплата только в личке Telegram:</b> <a href="https://t.me/AT0M1C_C4" target="_blank">@AT0M1C_C4</a>. Остальное (карта и др.) можно обсудить прямо здесь.</div><div class="chBox" id="chBox"></div><div class="chQ"><button onclick="chatQuick('Привет! Хочу оплатить заказ, как это сделать?')">💳 Оплата</button><button onclick="chatQuick('Где мой заказ? Номер: ')">📦 Где заказ</button><button onclick="chatQuick('Есть вопрос по товару: ')">❓ Вопрос</button></div><div class="chSend"><input id="chIn" maxlength="500" placeholder="Напиши сообщение…" autocomplete="off"><button onclick="chatSend()" aria-label="Отправить">➤</button></div></div></div></div>
+<div class="pickBg" id="sendPick" style="display:none" onclick="if(event.target===this)hidePick()"><div class="pickBox"><b>Как оформить заказ?</b><button class="btn primary" onclick="sendTo('tg')">✈️ ОТПРАВИТЬ СРАЗУ<small>откроется Telegram с готовым заказом</small></button><button class="btn secondary" onclick="sendTo('admin')">📨 СМС В ШОП<small>заказ уйдёт в магазин, откроется чат · ⭐ звёзды только в ЛС</small></button><button class="pickX" onclick="hidePick()">Отмена</button></div></div>
 <div class="toast" id="toast">Добавлено в корзину</div>
 
 <canvas id="cf"></canvas>
@@ -413,7 +425,6 @@ const products=[
 {name:'Теплак',cat:'Допы',price:20,icon:'🌡️',group:'extras'},
 {name:'Рюкзак',cat:'Допы',price:20,icon:'🎒',group:'extras'},
 {name:'5 карта',cat:'Сопроводы',price:50,icon:'🗺️',group:'escort'},
-{name:'6 карта',cat:'Сопроводы',price:70,icon:'🗺️',group:'escort'},
 {name:'7 карта',cat:'Сопроводы',price:95,icon:'🗺️',group:'escort'},
 {name:'8 карта',cat:'Сопроводы',price:150,icon:'🗺️',group:'escort'},
 {name:'Вышка',cat:'АВМ',price:30,icon:'🎯',group:'aviation'},
@@ -436,10 +447,10 @@ const TAGS={'Броник|Сталик':'ХИТ','Кобра|Калаш':'ХИТ
 products.forEach(p=>p.tag=TAGS[p.name+'|'+p.cat]||'');
 // Акция: измени SALE, чтобы поменять скидку/дату окончания (group: armor | weapon | extras | escort)
 const SALE={group:'extras',pct:20,title:'ДОПЫ',anchor:'extras',until:new Date('2026-10-07T23:59:59')};
-const saleOn=()=>Date.now()<SALE.until.getTime();
+const saleOn=()=>SALE.on!==false&&Date.now()<SALE.until.getTime();
 const priceOf=p=>saleOn()&&p.group===SALE.group?Math.max(15,Math.round(p.price*(1-SALE.pct/100))):p.price;
 const full=p=>(p.group==='extras'||p.group==='escort'||p.name.startsWith(p.cat))?p.name:p.name+' ('+p.cat+')';
-const BD=3; // скидка комплекта, % (один для всех комплектов, конструктора и подбора)
+let BD=3; // скидка комплекта, % (один для всех комплектов, конструктора и подбора)
 const BUNDLES=[
 {name:'Старт',items:[['Броник','6 уровень'],['Каска','6 уровень']]},
 {name:'Кобра',items:[['Броник','Кобра'],['Каска','Кобра']]},
@@ -451,7 +462,7 @@ const BUNDLES=[
 ];
 const find=r=>products.find(p=>p.name===r[0]&&p.cat===r[1]);
 const BM=1.05; // наценка комплекта к сумме вещей
-const calcBundles=()=>BUNDLES.forEach(b=>{b.price=Math.round(b.items.map(find).reduce((a,p)=>a+p.price,0)*BM/5)*5});calcBundles();
+const calcBundles=()=>BUNDLES.forEach(b=>{b.price=b.fixed>0?b.fixed:Math.round(b.items.map(find).reduce((a,p)=>a+p.price,0)*BM/5)*5});calcBundles();
 // Отзывы: добавляй сюда, например {name:'Ник',stars:5,text:'Всё быстро, спасибо!'}
 const REVIEWS=[];
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -464,7 +475,7 @@ function fill(id,g){const a=list(g);$(id).innerHTML=a.length?a.map(card).join(''
 function renderBundles(){$('bundleGrid').innerHTML=BUNDLES.map((b,i)=>{const ps=b.items.map(find);const old=ps.reduce((a,p)=>a+p.price,0);return `<article class="card bundle r-set"><div class="image">${ps.map(p=>p.icon).join(' ')}</div><div class="info"><div class="type">КОМПЛЕКТ${old>b.price?' · −'+Math.round((old-b.price)/old*100)+'%':''}</div><div class="name">${b.name}</div><div class="bl">${ps.map(full).join(' + ')}</div><div class="bl" style="color:var(--green);font-weight:800">ПЛАТИШЬ: ${M(b.price)}${old>b.price?' · вместо '+M(old)+' · экономия '+M(old-b.price):''}</div><div class="row"><span class="price">${old>b.price?'<s class="old">'+M(old)+'</s> ':''}${M(b.price)} <span class="stars">⭐ ${b.price}</span></span>${ps.some(p=>stockOf(p)<=0)?'<button class="buy" disabled>НЕТ В НАЛИЧИИ</button>':`<button class="buy" onclick="buyBundle(${i})">В КОРЗИНУ</button>`}</div></div></article>`}).join('')}
 function buyBundle(i){const b=BUNDLES[i];if(isOpen()&&!okStock(b.items.map(find)))return;addItem('Комплект «'+b.name+'»: '+b.items.map(find).map(full).join(' + '),b.price,b.items.map(find).map(q=>q.name+"|"+q.cat))}
 function renderReviews(){$('reviewGrid').innerHTML=REVIEWS.length?REVIEWS.map(r=>`<div class="rev"><div class="st">${'★'.repeat(r.stars||5)}</div><p>${esc(r.text)}</p><div class="nm">${esc(r.name)}</div></div>`).join(''):'<div class="rev cta"><h3>Отзывы покупателей — в нашем Telegram-канале</h3><p>Почитай отзывы в канале выше или напиши продавцу напрямую.</p><a class="btn primary" href="https://t.me/K0dami" target="_blank">⚡ НАПИСАТЬ SELLER</a></div>'}
-function tickSale(){const bar=$('saleBar');const l=SALE.until.getTime()-Date.now();if(l<=0){if(bar.style.display!=='none'){bar.style.display='none';render()}return}const z=n=>String(n).padStart(2,'0'),d=Math.floor(l/864e5);$('saleTime').textContent=(d?d+'д ':'')+z(Math.floor(l%864e5/36e5))+':'+z(Math.floor(l%36e5/6e4))+':'+z(Math.floor(l%6e4/1e3))}
+function tickSale(){const bar=$('saleBar');const l=saleOn()?SALE.until.getTime()-Date.now():0;if(l<=0){if(bar.style.display!=='none'){bar.style.display='none';render()}return}const z=n=>String(n).padStart(2,'0'),d=Math.floor(l/864e5);$('saleTime').textContent=(d?d+'д ':'')+z(Math.floor(l%864e5/36e5))+':'+z(Math.floor(l%36e5/6e4))+':'+z(Math.floor(l%6e4/1e3))}
 function render(){fill('armorGrid','armor');fill('aviaGrid','aviation');fill('extrasGrid','extras');fill('escortGrid','escort');renderWeapons();renderTabs();renderBundles()}
 function renderTabs(){let cats=['Все','МК','Калаш','AUG','М416'];$('weaponTabs').innerHTML=cats.map(c=>`<button class="tab ${weaponFilter===c?'active':''}" onclick="setWeapon('${c}')">${c}</button>`).join('')}
 function renderWeapons(){fill('weaponGrid','weapon')}
@@ -558,7 +569,7 @@ function checkout(){
   const tg=()=>window.open('https://t.me/AT0M1C_C4?text='+encodeURIComponent(message),'_blank');
   if(!DBU||PREVIEW||kind==='tg'){if(kind==='admin')toast('СМС в шоп ещё не подключено — открываю Telegram',2500);tg();return}
   const lines=cart.map(x=>({name:x.name,price:x.price,keys:x.keys||[]})),oid=window._oid;
-  fetch(DBU+'/orders.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({oid,t:Date.now(),pubg:nick,lines,total:c.total,disc:c.disc,pay:$('pay').value,cur,status:'new'})}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{hist[0].key=j.name;save('atomicHist',hist);cart=[];updateCart();closeCart();openSheet('history');toast('✅ Заказ отправлен продавцу, жди ответ тут',3200);pollOrders()}).catch(()=>{toast('Не удалось отправить, открываю Telegram',2500);tg()})
+  fetch(DBU+'/orders.json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({oid,t:Date.now(),pubg:nick,lines,total:c.total,disc:c.disc,pay:$('pay').value,cur,status:'new',sid:(window._chatEnsure?window._chatEnsure():'')})}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{hist[0].key=j.name;save('atomicHist',hist);cart=[];updateCart();closeCart();(window._chatOrder?_chatOrder(message):openSheet('history'));toast('✅ Заказ отправлен — открыл чат с магазином',3200);pollOrders()}).catch(()=>{toast('Не удалось отправить, открываю Telegram',2500);tg()})
 }
 function toast(msg,ms){$('toast').textContent=msg;$('toast').classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>$('toast').classList.remove('show'),ms||1400)}
 
@@ -861,7 +872,7 @@ for(const a of A)for(const h of H)for(const w of W)for(const e of E){const ps=[a
 window._qb=best;xr('🧭 ТВОЙ КОМПЛЕКТ',best?best.ps.map(p=>'<div class="cartItem"><span>'+esc(full(p))+'</span><b>₴ '+priceOf(p)+'</b></div>').join('')+'<div class="cartItem" style="color:var(--green)"><span>Скидка комплекта −'+BD+'%</span></div><h3>Итого: ₴ '+best.tot+'</h3><div class="actions"><button class="btn primary" onclick="addItem(\'Подбор: \'+_qb.ps.map(full).join(\' + \'),_qb.tot,_qb.ps.map(q=>q.name+String.fromCharCode(124)+q.cat));closeSheet()">🛒 В КОРЗИНУ</button><button class="btn secondary" onclick="QZ={};quiz()">🔁 ЗАНОВО</button></div>':'<p class="muted">На такой бюджет полный комплект не собрать. Попробуй больше.</p><div class="actions"><button class="btn secondary" onclick="QZ={};quiz()">🔁 ЗАНОВО</button></div>')}
 /* Помощник */
 const HELP=[['Как оплатить?','Картой, за звёзды или криптой. Способ выбираешь в корзине, детали присылает продавец в Telegram.'],['Как работают скидки?','−10% от ₴100, −15% от ₴200, статус, промокод, PASS. Скидки не суммируются, берётся большая.'],['Что такое атомы ⚛️?','Баллы за заказы, вход, игры и квесты. Меняются на скидки в плитке «АТОМЫ» и открывают кейс.'],['Где мой заказ?','Открой «История заказов», там номер. Напиши его продавцу в Telegram.'],['Что такое ATOMIC PASS?','Скидка −7% на все заказы на срок действия. Покупается у продавца, код вводится в плитке «КОД».']];
-function openHelp(i){xr('💬 ПОМОЩНИК',HELP.map((h,k)=>'<button class="btn secondary" style="width:100%;margin-bottom:8px;text-align:left" onclick="openHelp('+k+')">'+h[0]+'</button>'+(k===i?'<div class="hist"><small>'+h[1]+'</small></div>':'')).join('')+'<div class="actions"><a class="btn primary" href="https://t.me/K0dami" target="_blank">⚡ НАПИСАТЬ ПРОДАВЦУ</a></div>')}
+function openHelp(i){xr('💬 ПОМОЩНИК',HELP.map((h,k)=>'<button class="btn secondary" style="width:100%;margin-bottom:8px;text-align:left" onclick="openHelp('+k+')">'+h[0]+'</button>'+(k===i?'<div class="hist"><small>'+h[1]+'</small></div>':'')).join('')+'<div class="actions"><button class="btn primary" onclick="chatOpen()">💬 ЧАТ В ШОПЕ</button><a class="btn secondary" href="https://t.me/K0dami" target="_blank">⚡ НАПИСАТЬ ПРОДАВЦУ</a></div>')}
 document.body.insertAdjacentHTML('beforeend','<button id="helper" onclick="openHelp()" aria-label="Помощник" style="position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:52px;height:52px;border-radius:50%;border:0;background:linear-gradient(135deg,#6fa83a,#d5a84b);color:#fff;font-size:22px;box-shadow:0 8px 24px #6fa83a66;cursor:pointer">💬</button>');
 
 /* ATOMIC FX: прогресс скролла + искры по тапу */
@@ -939,5 +950,108 @@ const _alG=addLoyal;addLoyal=function(t){const before=lvl();_alG(t);const g=gift
 const code=genCode(g.d);codes[code]=g.d;save('atomicCodes',codes);AT+=g.a;save('atomicAt',AT);if(g.pass)save('atomicPass',Math.max(Date.now(),+load('atomicPass',0))+g.pass*864e5);
 const after=lvl(),nx=LV[LV.indexOf(after)+1],sp=+loy.spent||0;
 setTimeout(()=>{confetti();sfxWin();openX('🎁 ПОДАРОК ЗА ЗАКАЗ','<p class="muted">Спасибо за заказ! Твой подарок:</p><div class="codeBox on" style="text-align:center">'+code+'</div><p>🎟 Скидка −'+g.d+'% на следующий заказ — введи код в корзине в поле «Промокод».</p><p>⚛️ +'+g.a+' атомов на счёт.</p>'+(g.pass?'<p>💎 ATOMIC PASS (−7% на все заказы) активен '+g.pass+' дн.</p>':'')+(after!==before?'<p>🎖 <b>Новый ранг: '+after.i+' '+after.n+'</b>'+(after.p?' — скидка −'+after.p+'% на каждый заказ':'')+'</p>':nx?'<p class="muted">До ранга «'+nx.n+'»: ещё ₴'+(nx.min-sp)+'</p>':'<p class="muted">У тебя максимальный ранг 👑</p>')+'<div class="actions"><button class="btn primary" onclick="copyText(\''+code+'\',\'Код скопирован\')">📋 СКОПИРОВАТЬ КОД</button></div>')},700)};
+</script>
+<script>
+/* ===== ЧАТ С МАГАЗИНОМ (Firebase: chatmeta + chatmsgs) ===== */
+(function(){
+const ON=!!DBU&&!PREVIEW,AL='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+let cid=load('atomicChatId',''),sid=load('atomicChatSid',''),reg=load('atomicChatReg',0),seen=+load('atomicChatSeen',0)||0,lastSig='',tick=0,busy=false,lastSend=0,notified=0;
+const H={'Content-Type':'application/json'};
+const hm=t=>new Date(t).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const isOpen=()=>!!(curSheet&&curSheet.id==='sh-chat');
+function rid(n){const a=new Uint32Array(n);try{crypto.getRandomValues(a)}catch(e){for(let i=0;i<n;i++)a[i]=Math.random()*4e9}return Array.from(a,x=>AL[x%AL.length]).join('')}
+function ids(){if(!cid||!sid){cid=rid(24);sid=rid(6);reg=0;save('atomicChatId',cid);save('atomicChatSid',sid);save('atomicChatReg',0)}return sid}
+async function register(){if(!ON||reg)return;ids();try{const r=await fetch(DBU+'/chatmeta/'+cid+'.json',{method:'PATCH',headers:H,body:JSON.stringify({sid,t:Date.now(),last:'',from:'n'})});if(r.ok){reg=1;save('atomicChatReg',1)}}catch(e){}}
+async function fetchMsgs(){const r=await fetch(DBU+'/chatmsgs/'+cid+'.json?orderBy=%22%24key%22&limitToLast=100');if(!r.ok)throw 0;const d=await r.json()||{};return Object.keys(d).sort((a,b)=>a<b?-1:1).map(k=>d[k])}
+function paint(list){
+  const box=$('chBox');if(!box)return;
+  const sig=list.length+':'+(list.length?list[list.length-1].t:0);if(sig===lastSig)return;lastSig=sig;
+  box.innerHTML=list.length?list.map(m=>'<div class="cmsg '+(m.from==='a'?'a':'c')+'"><div>'+esc(m.text)+'</div><small>'+hm(m.t)+'</small></div>').join(''):'<div class="chEmpty">Напиши сообщение — продавец ответит прямо тут.<br>Можно спросить про оплату, заказ или товар.</div>';
+  box.scrollTop=box.scrollHeight;
+}
+function badge(list){
+  const la=[...list].reverse().find(m=>m.from==='a'),un=!!(la&&la.t>seen&&!isOpen());
+  document.querySelectorAll('.chDot').forEach(e=>e.style.display=un?'inline-block':'none');
+  if(un&&la.t!==notified){notified=la.t;toast('💬 Ответ от магазина',2800)}
+}
+async function poll(force){
+  if(!ON||!cid||busy)return;
+  const open=isOpen();if(!open&&!force&&++tick%5)return;
+  busy=true;
+  try{const list=await fetchMsgs();if(open){const la=[...list].reverse().find(m=>m.from==='a');if(la&&la.t>seen){seen=la.t;save('atomicChatSeen',seen)}paint(list)}badge(list)}catch(e){}
+  busy=false;
+}
+async function send(txt){
+  if(!ON)return;const inp=$('chIn');
+  const text=(txt!==undefined?String(txt):inp.value).trim().slice(0,500);if(!text)return;
+  if(Date.now()-lastSend<1200){toast('Не так быстро 🙂');return}
+  ids();lastSend=Date.now();inp.value='';const t=Date.now();
+  try{
+    const r=await fetch(DBU+'/chatmsgs/'+cid+'.json',{method:'POST',headers:H,body:JSON.stringify({from:'c',text,t})});if(!r.ok)throw 0;
+    const r2=await fetch(DBU+'/chatmeta/'+cid+'.json',{method:'PATCH',headers:H,body:JSON.stringify({sid,t,last:text.slice(0,100),from:'c'})});if(!r2.ok)throw 0;
+    reg=1;save('atomicChatReg',1);lastSig='';busy=false;poll(true);
+  }catch(e){toast('Не отправилось, проверь интернет',2200);inp.value=text}
+}
+function copy(t,m){try{navigator.clipboard.writeText(t).then(()=>toast(m),fb)}catch(e){fb()}function fb(){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(m)}catch(e){toast('Не вышло скопировать')}a.remove()}}
+window.chatOpen=function(){
+  if(!ON){toast('Чат пока недоступен — открываю Telegram',2200);window.open('https://t.me/AT0M1C_C4','_blank');return}
+  ids();$('chSid').textContent=sid;lastSig='';$('chBox').innerHTML='';openSheet('chat');
+  if(cid)poll(true);else paint([]);
+  setTimeout(()=>{try{$('chIn').focus({preventScroll:true})}catch(e){}},700);
+};
+window.chatSend=()=>send();
+window.chatQuick=t=>{const i=$('chIn');i.value=t;i.focus()};
+window.chatCopy=()=>{ids();copy(sid,'ID скопирован')};
+window._chatEnsure=()=>{if(!ON)return '';ids();register();return sid};
+window._chatOrder=function(m){
+  if(!ON){openSheet('history');return}
+  chatOpen();lastSend=0;
+  send(('📨 Заказ из шопа\n'+String(m||'')).slice(0,500));
+};
+$('chIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();send()}});
+/* ID покупателя уходит в Telegram вместе с заказом */
+const _ot=orderText;orderText=function(n){let m=_ot(n);if(ON){ids();m+='\n🆔 Мой ID в шопе: '+sid}return m};
+/* красная точка на кнопках чата */
+const hb=$('helper');if(hb)hb.insertAdjacentHTML('beforeend','<i class="chDot" style="position:absolute;top:3px;right:3px;margin:0"></i>');
+setInterval(()=>poll(),4000);setTimeout(()=>poll(true),1500);
+})();
+</script>
+<script>
+/* ===== Настройки из админки: акция, скидка комплектов, часы продавца ===== */
+(function(){
+const BASE=BUNDLES.map(b=>({name:b.name,items:b.items}));
+function applySets(){
+  const S=CFG.sets||{},out=[];
+  BASE.concat(Array.isArray(CFG.custom)?CFG.custom:[]).forEach(b=>{
+    const o=S[b.name]||{};if(o.off)return;
+    const items=(b.items||[]).filter(r=>Array.isArray(r));
+    if(items.length<2||!items.every(r=>find(r)))return;
+    out.push({name:String(b.name),items,fixed:+o.price>0?+o.price:0});
+  });
+  BUNDLES.length=0;out.forEach(b=>BUNDLES.push(b));
+}
+const GT={armor:['БРОНЯ','armor'],weapon:['ОРУЖИЕ','weapons'],aviation:['АВМ','aviation'],extras:['ДОПЫ','extras'],escort:['СОПРОВОДЫ','escorts']};
+function applyExtra(){
+  applySets();
+  const s=CFG.sale;
+  if(s){
+    const g=GT[s.group]||GT.extras;
+    SALE.on=s.on!==false;SALE.group=GT[s.group]?s.group:'extras';SALE.pct=+s.pct>0?+s.pct:SALE.pct;
+    if(s.until){const d=new Date(s.until);if(!isNaN(d))SALE.until=d}
+    SALE.title=g[0];SALE.anchor=g[1];
+  }
+  if(CFG.bd!==undefined&&CFG.bd!==''&&!isNaN(+CFG.bd))BD=+CFG.bd;
+  const v=CFG.seller;if(v){if(v.from!==undefined&&v.from!=='')SELLER.from=+v.from;if(v.to!==undefined&&v.to!=='')SELLER.to=+v.to;SELLER.reply=v.reply||''}
+  try{
+    const bar=$('saleBar'),on=saleOn();
+    if(bar)bar.style.display=on?'':'none';
+    if($('saleTitle'))$('saleTitle').textContent=SALE.title+' −'+SALE.pct+'%';
+    if($('saleLink'))$('saleLink').href='#'+SALE.anchor;
+    if(typeof sellerSt==='function')sellerSt();
+  }catch(e){}
+}
+const _ap=applyPrices;applyPrices=function(){_ap();applyExtra()};
+if(CFG.sale||CFG.bd!==undefined||CFG.seller||CFG.sets||CFG.custom){applyExtra();try{calcBundles();render();updateCart()}catch(e){}}
+})();
 </script>
 </body></html>
